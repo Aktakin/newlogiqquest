@@ -32,7 +32,10 @@ interface Database {
 }
 
 const here = dirname(fileURLToPath(import.meta.url));
-const DB_PATH = resolve(here, '../data/db.json');
+/** Vercel's filesystem is read-only except /tmp; locally we keep a real file. */
+const DB_PATH = process.env.VERCEL
+  ? resolve('/tmp', 'logiq-db.json')
+  : resolve(here, '../data/db.json');
 
 let db: Database = { players: {} };
 let writing: Promise<void> = Promise.resolve();

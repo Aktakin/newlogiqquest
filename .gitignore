@@ -7,3 +7,4 @@ build/
 packages/server/data/db.json
 .DS_Store
 .shots/
+.vercel/
