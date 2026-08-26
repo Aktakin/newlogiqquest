@@ -3,8 +3,5 @@
   "installCommand": "npm install --foreground-scripts",
   "buildCommand": "npm run build",
   "outputDirectory": "packages/client/dist",
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ]
+  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
 }
