@@ -1,4 +1,4 @@
-# LOGIQ
+# Frogiq
 
 A puzzle platform that teaches programming logic — order, state, repetition and
 abstraction — without asking anyone to memorise syntax first. Three activities

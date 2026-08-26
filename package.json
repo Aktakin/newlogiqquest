@@ -2,7 +2,7 @@
   "name": "logiq",
   "version": "0.1.0",
   "private": true,
-  "description": "LOGIQ - a gamified platform that teaches programming logic through visual puzzles.",
+  "description": "Frogiq - a gamified platform that teaches programming logic through visual puzzles.",
   "workspaces": [
     "packages/engine",
     "packages/server",

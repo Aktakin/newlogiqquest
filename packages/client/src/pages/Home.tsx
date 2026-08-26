@@ -28,7 +28,7 @@ export function Home() {
           <span className="wordmark__frog" aria-hidden>
             <Frog />
           </span>
-          LOGIQ
+          FROGIQ
         </span>
         <span className="home__tally">
           {totalStars > 0 && <span>{totalStars} stars</span>}
