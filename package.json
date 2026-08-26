@@ -15,13 +15,14 @@
     "build": "npm run build --workspace @logiq/client",
     "start": "npm run start --workspace @logiq/server",
     "typecheck": "tsc -b packages/engine packages/server packages/client",
-    "verify": "npm run verify --workspace @logiq/engine"
+    "verify": "npm run verify --workspace @logiq/engine",
+    "postinstall": "npm rebuild esbuild"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
     "typescript": "^5.5.4"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=20"
   }
 }
