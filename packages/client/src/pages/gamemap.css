@@ -1,0 +1,178 @@
+.gamemap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 24px 70px;
+}
+
+.gamemap--missing {
+  display: grid;
+  place-items: center;
+  gap: 16px;
+  min-height: 60vh;
+}
+
+.gamemap__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--line);
+}
+
+.gamemap__nav {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gamemap__title {
+  margin-top: 8px;
+  font-size: clamp(30px, 4vw, 42px);
+}
+
+.gamemap__body {
+  margin-top: 12px;
+  max-width: 68ch;
+  color: var(--text-muted);
+  font-size: 15.5px;
+  line-height: 1.66;
+}
+
+.gamemap__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.levels {
+  list-style: none;
+  margin: 30px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 16px;
+}
+
+.levelcard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  transition: transform 0.2s var(--ease-out), border-color 0.2s, box-shadow 0.2s;
+}
+
+a.levelcard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent-400) 42%, transparent);
+  box-shadow: var(--shadow-md), 0 0 50px -36px var(--accent-glow);
+}
+
+.levelcard--locked {
+  opacity: 0.44;
+  cursor: not-allowed;
+}
+
+.levelcard__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-faint);
+}
+
+.levelcard__index {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+.levelcard__state {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.minimap {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: 1.5px;
+  aspect-ratio: var(--cols) / var(--rows);
+  max-height: 116px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 7px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(160deg, #0d2434, #061321);
+  border: 1px solid rgba(120, 190, 220, 0.13);
+}
+
+.minimap__cell {
+  border-radius: 1.5px;
+  aspect-ratio: 1;
+  min-width: 5px;
+}
+
+.minimap__cell--pad {
+  background: #2f8f5c;
+}
+
+.minimap__cell--rock {
+  background: #5b6a76;
+}
+
+.minimap__cell--goal {
+  background: var(--gold-400);
+  box-shadow: 0 0 6px var(--gold-glow);
+}
+
+.minimap__cell--water {
+  background: rgba(120, 190, 220, 0.06);
+}
+
+.levelcard__text h2 {
+  font-size: 16.5px;
+}
+
+.levelcard__text p {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.levelcard__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.levelcard__concept {
+  color: var(--text-faint);
+  text-transform: capitalize;
+}
+
+.levelcard__best,
+.levelcard__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--accent-400);
+}

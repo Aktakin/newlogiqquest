@@ -1,0 +1,27 @@
+{
+  "name": "logiq",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LOGIQ - a gamified platform that teaches programming logic through visual puzzles.",
+  "workspaces": [
+    "packages/engine",
+    "packages/server",
+    "packages/client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c cyan,green \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm run dev --workspace @logiq/server",
+    "dev:client": "npm run dev --workspace @logiq/client",
+    "build": "npm run build --workspace @logiq/client",
+    "start": "npm run start --workspace @logiq/server",
+    "typecheck": "tsc -b packages/engine packages/server packages/client",
+    "verify": "npm run verify --workspace @logiq/engine"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}

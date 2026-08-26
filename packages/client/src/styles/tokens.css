@@ -1,0 +1,180 @@
+/**
+ * Design tokens. Two themes share one vocabulary: nothing outside this file
+ * should name a colour directly, so a surface only has to be described once.
+ *
+ * The default is the dark theme — deep pond water, cool slate panels and a
+ * single warm gold reserved for reward moments.
+ */
+:root {
+  --ink-900: #05090f;
+  --ink-800: #070d14;
+  --ink-700: #0b131c;
+  --ink-600: #0f1926;
+  --ink-500: #142130;
+  --ink-400: #1b2b3c;
+  --ink-300: #24374a;
+
+  --line: rgba(150, 184, 205, 0.12);
+  --line-strong: rgba(150, 184, 205, 0.22);
+
+  --text: #e9f1f6;
+  --text-muted: #93a8ba;
+  --text-faint: #64798c;
+
+  /* Raised fills, lightest to heaviest, plus the recess they sit in. */
+  --surface: rgba(255, 255, 255, 0.03);
+  --surface-2: rgba(255, 255, 255, 0.05);
+  --surface-3: rgba(255, 255, 255, 0.08);
+  --sunken: rgba(0, 0, 0, 0.26);
+
+  --panel: linear-gradient(180deg, rgba(28, 44, 61, 0.72), rgba(14, 24, 35, 0.82));
+  --card: linear-gradient(180deg, #1a2a3a, #0d1826);
+
+  /* Code wells keep their own surface so syntax colour has a home. */
+  --well: linear-gradient(180deg, rgba(10, 20, 30, 0.9), rgba(6, 13, 20, 0.95));
+  --well-shadow: inset 0 2px 26px rgba(0, 0, 0, 0.6);
+  --code-text: #cfe0ec;
+  --tok-string: #8ce0a8;
+  --tok-keyword: #d69cf0;
+  --tok-fn: #7fd7ff;
+  --tok-number: #f9c46b;
+  --tok-comment: #5d7285;
+
+  --mint-300: #6cf0b6;
+  --mint-400: #57e2a5;
+  --mint-500: #2fd190;
+  --mint-600: #1fa972;
+  --mint-glow: rgba(47, 209, 144, 0.28);
+
+  --gold-400: #f7cf6a;
+  --gold-500: #eeb63c;
+  --gold-glow: rgba(238, 182, 60, 0.3);
+
+  --sky-400: #62b8ea;
+  --sky-500: #3b96cd;
+  --sky-glow: rgba(59, 150, 205, 0.28);
+
+  --violet-400: #a99bf5;
+  --violet-500: #8b78ef;
+  --violet-glow: rgba(139, 120, 239, 0.28);
+
+  --coral-400: #f4787c;
+  --coral-500: #e2555a;
+
+  /* Text that sits on top of a saturated fill. */
+  --on-mint: #04231a;
+  --on-coral: #1a0507;
+
+  /* The three tints washed across the page behind everything. */
+  --wash-a: rgba(47, 209, 144, 0.09);
+  --wash-b: rgba(59, 150, 205, 0.09);
+  --wash-c: rgba(139, 120, 239, 0.07);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 30px 60px -30px rgba(0, 0, 0, 0.85), 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  --font-display: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Mono', ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.42, 0.5, 1);
+
+  --header-h: 56px;
+}
+
+/**
+ * Daylight. Not an inversion: the accents are darkened until they carry their
+ * weight on white, and the shadows lose the black that only reads on dark.
+ */
+[data-theme='light'] {
+  --ink-900: #ffffff;
+  --ink-800: #f5f8fb;
+  --ink-700: #eef3f8;
+  --ink-600: #e7edf4;
+  --ink-500: #dde5ef;
+  --ink-400: #ccd8e5;
+  --ink-300: #b3c2d2;
+
+  --line: rgba(16, 40, 58, 0.13);
+  --line-strong: rgba(16, 40, 58, 0.22);
+
+  --text: #0d1b26;
+  --text-muted: #45606f;
+  --text-faint: #6d8595;
+
+  --surface: rgba(14, 30, 44, 0.04);
+  --surface-2: rgba(14, 30, 44, 0.07);
+  --surface-3: rgba(14, 30, 44, 0.11);
+  --sunken: rgba(14, 30, 44, 0.06);
+
+  --panel: #111111;
+  --card: #111111;
+
+  --well: linear-gradient(180deg, #f1f6fa, #e8eff6);
+  --well-shadow: inset 0 2px 14px rgba(16, 40, 58, 0.08);
+  --code-text: #17293a;
+  --tok-string: #0a7742;
+  --tok-keyword: #7834b8;
+  --tok-fn: #0f6390;
+  --tok-number: #9d5407;
+  --tok-comment: #7a8d9b;
+
+  --mint-300: #16b87c;
+  --mint-400: #0f9c66;
+  --mint-500: #0b8557;
+  --mint-600: #086a45;
+  --mint-glow: rgba(15, 156, 102, 0.24);
+
+  --gold-400: #a97505;
+  --gold-500: #8d6104;
+  --gold-glow: rgba(169, 117, 5, 0.22);
+
+  --sky-400: #1a7ab4;
+  --sky-500: #146196;
+  --sky-glow: rgba(26, 122, 180, 0.2);
+
+  --violet-400: #654cd4;
+  --violet-500: #533cb8;
+  --violet-glow: rgba(101, 76, 212, 0.2);
+
+  --coral-400: #d1343a;
+  --coral-500: #b3272d;
+
+  --on-mint: #ffffff;
+  --on-coral: #ffffff;
+
+  --wash-a: rgba(15, 156, 102, 0.07);
+  --wash-b: rgba(26, 122, 180, 0.08);
+  --wash-c: rgba(101, 76, 212, 0.05);
+
+  --shadow-sm: 0 1px 2px rgba(16, 40, 58, 0.08);
+  --shadow-md: 0 10px 24px -14px rgba(16, 40, 58, 0.3);
+  --shadow-lg: 0 30px 60px -32px rgba(16, 40, 58, 0.32), 0 2px 8px rgba(16, 40, 58, 0.08);
+}
+
+/* Accent palettes swapped per game so each pond feels like its own place. */
+[data-accent='mint'] {
+  --accent-400: var(--mint-400);
+  --accent-500: var(--mint-500);
+  --accent-glow: var(--mint-glow);
+}
+
+[data-accent='gold'] {
+  --accent-400: var(--gold-400);
+  --accent-500: var(--gold-500);
+  --accent-glow: var(--gold-glow);
+}
+
+[data-accent='violet'] {
+  --accent-400: var(--violet-400);
+  --accent-500: var(--violet-500);
+  --accent-glow: var(--violet-glow);
+}

@@ -1,0 +1,688 @@
+/* Ligatures would render => as a single glyph, and this game is about typing
+   the exact characters, so every code surface here opts out. */
+.target,
+.entry,
+.snippet,
+.choice__code,
+.verdict__text code {
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+}
+
+.cipher {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 22px 24px 30px;
+}
+
+.cipher__bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.cipher__back {
+  justify-self: start;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.cipher__name {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* The take. Centred and oversized — it is the reason to keep playing. */
+.wallet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 34px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--gold-400) 32%, transparent);
+  background: radial-gradient(
+    120% 130% at 50% 0%,
+    color-mix(in srgb, var(--gold-400) 18%, transparent),
+    color-mix(in srgb, var(--gold-400) 4%, transparent)
+  );
+  box-shadow: 0 14px 42px -26px var(--gold-glow);
+}
+
+.wallet__label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.wallet__value {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--gold-400);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 34px var(--gold-glow);
+}
+
+/* ------------------------------------------------------------------ clock */
+
+.clock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: -6px;
+}
+
+.clock__track {
+  flex: 1;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.clock__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.09s linear, background 0.3s;
+}
+
+.clock__time {
+  min-width: 46px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock[data-state='ok'] .clock__fill {
+  background: var(--mint-400);
+}
+
+.clock[data-state='ok'] .clock__time {
+  color: var(--text-faint);
+}
+
+.clock[data-state='warn'] .clock__fill {
+  background: var(--gold-400);
+}
+
+.clock[data-state='warn'] .clock__time {
+  color: var(--gold-400);
+}
+
+.clock[data-state='danger'] .clock__fill {
+  background: var(--coral-400);
+}
+
+.clock[data-state='danger'] .clock__time {
+  color: var(--coral-400);
+  animation: pulse 0.7s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ------------------------------------------------------------------ brief */
+
+.brief {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 36px 32px 32px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+}
+
+.brief__title {
+  font-size: clamp(26px, 4vw, 34px);
+  letter-spacing: -0.03em;
+}
+
+.brief__rules {
+  margin: 4px 0 8px;
+  padding: 0;
+  list-style: none;
+  counter-reset: brief;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.brief__rules li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.brief__rules li::before {
+  content: counter(brief) '.';
+  counter-increment: brief;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--gold-400);
+  padding-top: 3px;
+}
+
+.brief__go {
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+/* ------------------------------------------------------------------ stage */
+
+.cipher__stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  padding: 30px 0;
+}
+
+.cipher__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.cipher__chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cipher__streak {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--gold-400) 40%, transparent);
+  background: color-mix(in srgb, var(--gold-400) 12%, transparent);
+  color: var(--gold-400);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+/* The password itself. Typed over rather than copied out. */
+.target {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  min-height: 132px;
+  gap: 1px;
+  padding: 34px 26px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+  font-family: var(--font-mono);
+  font-size: clamp(21px, 4vw, 38px);
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+
+.target__char {
+  position: relative;
+  color: var(--text);
+  transition: color 0.12s, background 0.12s;
+  border-radius: 3px;
+}
+
+.target--hinted .is-upper {
+  color: var(--sky-400);
+}
+
+.target--hinted .is-lower {
+  color: var(--mint-400);
+}
+
+.target--hinted .is-symbol {
+  color: var(--text-muted);
+}
+
+.target__char.is-ok {
+  background: rgba(47, 209, 144, 0.16);
+}
+
+.target__char.is-bad {
+  background: rgba(226, 85, 90, 0.28);
+  color: var(--coral-400);
+}
+
+.target__char--caret::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 6%;
+  bottom: 6%;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--gold-400);
+  animation: blink 1.05s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.snippet {
+  display: flex;
+  align-items: center;
+  min-height: 132px;
+  margin: 0;
+  padding: 24px 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+  font-family: var(--font-mono);
+  font-size: clamp(14px, 2vw, 18px);
+  line-height: 1.75;
+  color: var(--code-text);
+  overflow-x: auto;
+}
+
+.tok--string {
+  color: var(--tok-string);
+}
+
+/* ------------------------------------------------------------------ popup */
+
+/* A question interrupts the crack rather than replacing it, so the password
+   stays on the board behind, greyed out and out of reach. */
+.cipher__stage--held {
+  pointer-events: none;
+  filter: saturate(0.5);
+}
+
+.popup {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.popup__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 8, 13, 0.58);
+  backdrop-filter: blur(4px);
+  animation: fade-in 0.22s var(--ease-out) both;
+}
+
+.popup__card {
+  position: relative;
+  width: min(620px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 26px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--gold-400) 28%, transparent);
+  background: var(--card);
+  box-shadow: var(--shadow-lg), 0 0 120px -50px var(--gold-glow);
+  animation: popup-in 0.3s var(--ease-out) both;
+}
+
+[data-theme='light'] .popup__scrim,
+[data-theme='light'] .sheet__scrim {
+  background: rgba(245, 248, 251, 0.72);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+}
+
+.popup__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.popup__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+}
+
+.popup__badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold-400);
+  box-shadow: 0 0 10px var(--gold-glow);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.popup .cipher__result {
+  min-height: 62px;
+}
+
+/* ------------------------------------------------------------------- quiz */
+
+.quiz__ask {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(17px, 2.4vw, 21px);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.popup .snippet {
+  min-height: 0;
+  padding: 18px 22px;
+  font-size: 15px;
+}
+
+.choices {
+  display: grid;
+  gap: 10px;
+}
+
+.choices--pill {
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s, background 0.16s, transform 0.12s, opacity 0.2s;
+}
+
+.choices--pill .choice {
+  justify-content: center;
+}
+
+.choice:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--gold-400) 50%, transparent);
+  background: color-mix(in srgb, var(--gold-400) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+.choice:disabled {
+  cursor: default;
+}
+
+.choice__key {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 6px;
+  background: var(--surface-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.choice__label {
+  font-family: var(--font-mono);
+  font-size: 15px;
+}
+
+.choice__code {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.choice--right {
+  border-color: rgba(47, 209, 144, 0.65);
+  background: rgba(47, 209, 144, 0.1);
+}
+
+.choice--right .choice__key {
+  background: var(--mint-400);
+  color: var(--on-mint);
+}
+
+.choice--wrong {
+  border-color: rgba(226, 85, 90, 0.65);
+  background: rgba(226, 85, 90, 0.1);
+}
+
+.choice--wrong .choice__key {
+  background: var(--coral-400);
+  color: var(--on-coral);
+}
+
+.choice--dim {
+  opacity: 0.4;
+}
+
+@media (max-width: 560px) {
+  .choices--pill {
+    grid-auto-flow: row;
+  }
+}
+
+.entry {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: clamp(15px, 2.2vw, 19px);
+  color: var(--text);
+  transition: border-color 0.16s, box-shadow 0.16s, background 0.16s;
+}
+
+.entry::placeholder {
+  color: var(--text-faint);
+}
+
+.entry:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--gold-400) 55%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold-400) 16%, transparent);
+}
+
+/* Graded states win over :focus — the input keeps focus through the review. */
+.entry.entry--ok,
+.entry.entry--ok:focus {
+  border-color: rgba(47, 209, 144, 0.6);
+  background: rgba(47, 209, 144, 0.08);
+  box-shadow: 0 0 0 3px rgba(47, 209, 144, 0.1);
+}
+
+.entry.entry--bad,
+.entry.entry--bad:focus {
+  border-color: rgba(226, 85, 90, 0.6);
+  background: rgba(226, 85, 90, 0.08);
+  box-shadow: 0 0 0 3px rgba(226, 85, 90, 0.1);
+}
+
+/* ----------------------------------------------------------------- result */
+
+.cipher__result {
+  min-height: 76px;
+}
+
+.cipher__prompt-help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.verdict {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  animation: verdict-in 0.28s var(--ease-out) both;
+}
+
+@keyframes verdict-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.verdict__delta {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.verdict--ok .verdict__delta {
+  color: var(--mint-400);
+  text-shadow: 0 0 26px var(--mint-glow);
+}
+
+.verdict--bad .verdict__delta {
+  color: var(--coral-400);
+}
+
+.verdict__text {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.verdict__text code {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--surface-3);
+  color: var(--gold-400);
+}
+
+.verdict__why {
+  max-width: 52ch;
+  color: var(--text-faint);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.verdict__next {
+  margin-top: 6px;
+}
+
+/* ------------------------------------------------------------------- foot */
+
+.cipher__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.cipher__stats {
+  display: flex;
+  gap: 28px;
+  margin: 0;
+}
+
+.cipher__stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cipher__stats dt {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.cipher__stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.cipher__stats .is-up {
+  color: var(--mint-400);
+}
+
+.cipher__stats .is-down {
+  color: var(--coral-400);
+}
+
+@media (max-width: 620px) {
+  .cipher__foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .cipher__stats {
+    justify-content: space-between;
+    gap: 12px;
+  }
+}
