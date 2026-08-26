@@ -10,6 +10,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "build": "node -e \"process.exit(0)\"",
     "verify": "tsx src/dev/verify.ts",
     "maze": "node scripts/generate-maze.mjs"
   }
