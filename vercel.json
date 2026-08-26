@@ -1,7 +1,6 @@
 {
-  "framework": null,
-  "installCommand": "npm install --foreground-scripts",
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build --workspace @logiq/client",
   "outputDirectory": "packages/client/dist",
-  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
+  "installCommand": "npm install",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
