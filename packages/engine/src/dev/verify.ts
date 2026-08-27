@@ -7,6 +7,22 @@
 import { PROMPTS, QUIZZES, TOKENS, drawPrompt, gradeCipher, winningSubmission } from '../cipher/index';
 import { run } from '../interpreter';
 import { games } from '../levels/index';
+import {
+  createPadGame,
+  hardDrop,
+  moveHorizontal,
+  rotateActive,
+  softDrop,
+  tickGravity,
+} from '../padfall/index';
+import {
+  MAZE_LEVELS,
+  createMaze,
+  moveFrog,
+  pathDegree,
+  reshuffleMaze,
+  shortestPath,
+} from '../maze/index';
 import type { Block, BlockKind, LevelDef, Program, RoutineDef } from '../types';
 import { solve } from './solver';
 
@@ -244,6 +260,59 @@ report(
   'questions never arrive back to back',
   `${drawn.filter((kind) => kind === 'quiz').length} of 40 rounds`,
 );
+
+{
+  const play = createPadGame();
+  report(play.queue.length === 5, 'Pad Fall starts with five upcoming pads');
+  report(play.active !== null && !play.over, 'Pad Fall spawns a live piece');
+  report(
+    play.board.every((cell) => cell === null),
+    'Pad Fall board starts empty',
+  );
+  report(
+    play.active?.color !== undefined && play.queue.every((piece) => Boolean(piece.color)),
+    'Pad Fall colours every piece',
+  );
+
+  let next = play;
+  next = moveHorizontal(next, 1);
+  next = rotateActive(next);
+  next = softDrop(next);
+  next = hardDrop(next);
+  report(next.active !== null || next.over, 'Pad Fall hard-drop either spawns next or ends');
+  report(next.queue.length === 5, 'Pad Fall queue stays topped up at five');
+
+  let stepped = createPadGame();
+  for (let i = 0; i < 30 && !stepped.over; i += 1) stepped = tickGravity(stepped);
+  report(true, 'Pad Fall gravity ticks without throwing');
+}
+
+{
+  report(MAZE_LEVELS.length === 20, 'Maze Runner ships twenty levels');
+  report(MAZE_LEVELS[0]?.branching === false, 'Level 1 is a gentle non-branching pond');
+  report(
+    MAZE_LEVELS.slice(1).every((level) => level.branching),
+    'Levels 2–20 use the three-way decoy fork',
+  );
+
+  const maze = createMaze(2, 42);
+  report(maze.grid[maze.start.y]![maze.start.x] === true, 'Branching maze start is walkable');
+  report(maze.grid[maze.goal.y]![maze.goal.x] === true, 'Branching maze goal is walkable');
+  report(maze.optimal > 0, 'Branching maze has a solvable path', `optimal ${maze.optimal}`);
+  report(pathDegree(maze.grid, maze.start) === 3, 'Branching start is a three-way junction');
+  report(
+    shortestPath(maze.grid, maze.start, maze.goal) === maze.optimal,
+    'Branching shortest-path agrees with spawn optimal',
+  );
+
+  let stepped = maze;
+  stepped = moveFrog(stepped, 1);
+  report(stepped.moves === 1 || stepped.facing === 1, 'Maze frog accepts a move or turn');
+  const again = reshuffleMaze(maze);
+  report(again.seed !== maze.seed, 'Maze reshuffle changes the seed');
+  report(again.levelId === maze.levelId, 'Maze reshuffle keeps the level');
+  report(pathDegree(again.grid, again.start) === 3, 'Reshuffled maze keeps a three-way start');
+}
 
 console.log(
   failures === 0 ? '\nAll content verified.\n' : `\n${failures} check(s) failed.\n`,

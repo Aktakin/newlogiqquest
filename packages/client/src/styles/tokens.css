@@ -178,3 +178,9 @@
   --accent-500: var(--violet-500);
   --accent-glow: var(--violet-glow);
 }
+
+[data-accent='sky'] {
+  --accent-400: var(--sky-400);
+  --accent-500: var(--sky-500);
+  --accent-glow: var(--sky-glow);
+}

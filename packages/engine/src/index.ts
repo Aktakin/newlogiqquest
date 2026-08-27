@@ -6,3 +6,5 @@ export * from './codegen';
 export * from './levels/index';
 export * from './library';
 export * from './cipher/index';
+export * from './padfall/index';
+export * from './maze/index';

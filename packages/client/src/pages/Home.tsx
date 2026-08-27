@@ -15,6 +15,27 @@ export function Home() {
     if (entryId === 'case-cipher') {
       return player.wallet.cracked > 0 ? `${player.wallet.cracked} cracked` : null;
     }
+    if (entryId === 'games') {
+      try {
+        const raw = localStorage.getItem('logiq.padfall.best.v1');
+        if (!raw) return null;
+        const bests = JSON.parse(raw) as Record<string, number>;
+        const top = Math.max(0, bests.score ?? bests.hard ?? 0, ...Object.values(bests));
+        return top > 0 ? `Best ${top.toLocaleString('en-US')}` : null;
+      } catch {
+        return null;
+      }
+    }
+    if (entryId === 'maze-runner') {
+      try {
+        const raw = localStorage.getItem('logiq.maze.progress.v1');
+        if (!raw) return null;
+        const data = JSON.parse(raw) as { cleared?: number };
+        return data.cleared && data.cleared > 0 ? `${data.cleared} of 20` : null;
+      } catch {
+        return null;
+      }
+    }
     const game = games.find((candidate) => candidate.id === entryId);
     if (!game) return null;
     const solved = game.levels.filter((level) => player.progressFor(game.id, level.id)).length;
@@ -55,7 +76,7 @@ export function Home() {
           </div>
 
           <h1 className="hero__title">Learn to think like a program.</h1>
-          <p className="hero__line">Three ways in. No syntax to memorise.</p>
+          <p className="hero__line">Five ways in. No syntax to memorise.</p>
         </section>
 
         <nav className="activities" aria-label="Activities">

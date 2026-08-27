@@ -28,4 +28,20 @@ export const library: LibraryEntry[] = [
     path: '/cipher',
     meta: 'Endless run',
   },
+  {
+    id: 'games',
+    title: 'Tetris',
+    blurb: 'Stack pads. Spot colours. Pause and plan.',
+    accent: 'sky',
+    path: '/games',
+    meta: '5 colours',
+  },
+  {
+    id: 'maze-runner',
+    title: 'Maze Runner',
+    blurb: 'Hop the frog from start to the golden lily.',
+    accent: 'mint',
+    path: '/maze',
+    meta: '20 levels',
+  },
 ];
