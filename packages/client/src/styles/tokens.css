@@ -27,8 +27,8 @@
   --surface-3: rgba(255, 255, 255, 0.08);
   --sunken: rgba(0, 0, 0, 0.26);
 
-  --panel: linear-gradient(180deg, rgba(28, 44, 61, 0.72), rgba(14, 24, 35, 0.82));
-  --card: linear-gradient(180deg, #1a2a3a, #0d1826);
+  --panel: #111111;
+  --card: #111111;
 
   /* Code wells keep their own surface so syntax colour has a home. */
   --well: linear-gradient(180deg, rgba(10, 20, 30, 0.9), rgba(6, 13, 20, 0.95));

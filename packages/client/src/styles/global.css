@@ -89,7 +89,7 @@ input {
   box-shadow: var(--shadow-md);
 }
 
-/* Light-mode cards are black with white type — not grey with black type. */
+/* Cards stay black with white type — not slate/grey panels. */
 [data-theme='light'] .panel,
 [data-theme='light'] .levelcard,
 [data-theme='light'] .activity,
@@ -99,7 +99,15 @@ input {
 [data-theme='light'] .brief,
 [data-theme='light'] .target,
 [data-theme='light'] .entry,
-[data-theme='light'] .snippet {
+[data-theme='light'] .snippet,
+[data-theme='light'] .maze__toolbar,
+[data-theme='light'] .maze-stat,
+[data-theme='light'] .maze-win__card,
+[data-theme='light'] .maze-levels__btn,
+[data-theme='light'] .veil__card,
+[data-theme='light'] .stat__box,
+[data-theme='light'] .queue__item,
+[data-theme='light'] .pause-chip {
   --text: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.74);
   --text-faint: rgba(255, 255, 255, 0.52);
@@ -108,6 +116,7 @@ input {
   --surface: rgba(255, 255, 255, 0.06);
   --surface-2: rgba(255, 255, 255, 0.1);
   --surface-3: rgba(255, 255, 255, 0.14);
+  --sunken: #0a0a0a;
   --mint-400: #57e2a5;
   --gold-400: #f7cf6a;
   --sky-400: #62b8ea;

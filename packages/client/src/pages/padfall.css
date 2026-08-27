@@ -103,7 +103,7 @@
   min-height: 72px;
   border-radius: var(--radius-md);
   border: 1px solid var(--line);
-  background: var(--sunken);
+  background: var(--card);
 }
 
 .stat__empty {
@@ -262,7 +262,7 @@
   padding: 8px 10px;
   border-radius: var(--radius-md);
   border: 1px solid var(--line);
-  background: var(--sunken);
+  background: var(--card);
 }
 
 .queue__n {
