@@ -41,7 +41,7 @@ export function Home() {
         const raw = localStorage.getItem('logiq.keyboard.progress.v1');
         if (!raw) return null;
         const data = JSON.parse(raw) as { cleared?: number };
-        return data.cleared && data.cleared > 0 ? `${data.cleared} of 6` : null;
+        return data.cleared && data.cleared > 0 ? `${data.cleared} of 10` : null;
       } catch {
         return null;
       }

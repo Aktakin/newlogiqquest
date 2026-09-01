@@ -1,4 +1,7 @@
+import { ALL_KEYS } from './layout';
 import type { KeyboardLevel } from './types';
+
+const ALL_KEY_IDS = ALL_KEYS.map((key) => key.id);
 
 export const KEYBOARD_LEVELS: KeyboardLevel[] = [
   {
@@ -37,15 +40,33 @@ export const KEYBOARD_LEVELS: KeyboardLevel[] = [
   },
   {
     id: 6,
+    title: 'Number extras',
+    blurb: 'The symbols and backspace on the number row.',
+    hidden: ['grave', 'minus', 'equal', 'backspace'],
+  },
+  {
+    id: 7,
+    title: 'Bracket keys',
+    blurb: 'Tab and the square brackets on the edges of the letter rows.',
+    hidden: ['tab', 'lbracket', 'rbracket', 'backslash'],
+  },
+  {
+    id: 8,
+    title: 'Punctuation',
+    blurb: 'Semicolon, quote, comma, period, slash — and the big keys around them.',
+    hidden: ['caps', 'semicolon', 'quote', 'enter', 'lshift', 'comma', 'period', 'slash', 'rshift'],
+  },
+  {
+    id: 9,
+    title: 'Space bar row',
+    blurb: 'Ctrl, Alt, Win, Menu, and the long space bar at the bottom.',
+    hidden: ['lctrl', 'lwin', 'lalt', 'space', 'ralt', 'rwin', 'menu', 'rctrl'],
+  },
+  {
+    id: 10,
     title: 'Full keyboard',
-    blurb: 'Symbols, modifiers, and space — the complete layout.',
-    hidden: [
-      'grave', 'minus', 'equal', 'backspace',
-      'tab', 'lbracket', 'rbracket', 'backslash',
-      'caps', 'semicolon', 'quote', 'enter',
-      'lshift', 'comma', 'period', 'slash', 'rshift',
-      'lctrl', 'lwin', 'lalt', 'space', 'ralt', 'rwin', 'menu', 'rctrl',
-    ],
+    blurb: 'Every single key — build the complete keyboard from scratch.',
+    hidden: ALL_KEY_IDS,
   },
 ];
 

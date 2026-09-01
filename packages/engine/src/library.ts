@@ -58,6 +58,6 @@ export const library: LibraryEntry[] = [
     blurb: 'Study the full keyboard, then drag keys into place.',
     accent: 'violet',
     path: '/keyboard',
-    meta: '6 levels',
+    meta: '10 levels',
   },
 ];
