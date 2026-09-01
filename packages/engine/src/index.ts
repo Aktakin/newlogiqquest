@@ -8,3 +8,4 @@ export * from './library';
 export * from './cipher/index';
 export * from './padfall/index';
 export * from './maze/index';
+export * from './keyboard/index';

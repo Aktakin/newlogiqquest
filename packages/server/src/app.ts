@@ -4,8 +4,8 @@ import {
   games,
   getGame,
   getLevel,
+  resolvePromptById,
   gradeCipher,
-  promptById,
   run,
   xpFor,
 } from '@logiq/engine';
@@ -96,7 +96,7 @@ export function createApp() {
     if (!player) return res.status(404).json({ error: 'Unknown player.' });
 
     const { promptId, typed, elapsedMs, streak } = req.body ?? {};
-    const prompt = typeof promptId === 'string' ? promptById(promptId) : undefined;
+    const prompt = typeof promptId === 'string' ? resolvePromptById(promptId) : undefined;
     if (!prompt) return res.status(400).json({ error: 'Unknown prompt.' });
     if (typeof typed !== 'string') return res.status(400).json({ error: 'Malformed attempt.' });
 

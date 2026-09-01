@@ -12,7 +12,7 @@ export function Home() {
   const banked = player.wallet.balance !== SEED_BALANCE || player.wallet.cracked > 0;
 
   const progressFor = (entryId: string) => {
-    if (entryId === 'case-cipher') {
+    if (entryId === 'case-cipher' || entryId === 'case-cipher-mini') {
       return player.wallet.cracked > 0 ? `${player.wallet.cracked} cracked` : null;
     }
     if (entryId === 'games') {
@@ -32,6 +32,16 @@ export function Home() {
         if (!raw) return null;
         const data = JSON.parse(raw) as { cleared?: number };
         return data.cleared && data.cleared > 0 ? `${data.cleared} of 20` : null;
+      } catch {
+        return null;
+      }
+    }
+    if (entryId === 'keyboard-lab') {
+      try {
+        const raw = localStorage.getItem('logiq.keyboard.progress.v1');
+        if (!raw) return null;
+        const data = JSON.parse(raw) as { cleared?: number };
+        return data.cleared && data.cleared > 0 ? `${data.cleared} of 6` : null;
       } catch {
         return null;
       }
@@ -75,8 +85,8 @@ export function Home() {
             </span>
           </div>
 
-          <h1 className="hero__title">Learn to think like a program.</h1>
-          <p className="hero__line">Five ways in. No syntax to memorise.</p>
+          <h1 className="hero__title">Learn to think like a programmer</h1>
+          <p className="hero__line">Choose between games, logic and code.</p>
         </section>
 
         <nav className="activities" aria-label="Activities">

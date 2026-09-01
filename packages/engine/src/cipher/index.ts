@@ -1,8 +1,17 @@
 import { PROMPTS, QUIZZES, TOKENS, promptById } from './bank';
+import { miniPromptById } from './mini-bank';
 import type { CipherGrade, CipherPrompt, Tier } from './types';
 
 export * from './types';
 export { PROMPTS, QUIZZES, TOKENS, promptById };
+export * from './mini';
+
+/** Looks up a prompt from either the full or mini bank. */
+export const resolvePromptById = (id: string): CipherPrompt | undefined =>
+  promptById(id) ?? miniPromptById(id);
+
+/** Mini mode reuses the same payout rules. */
+export { gradeCipher as gradeCipherMini };
 
 /** Seed money, so an early mistake costs something without ending the run. */
 export const SEED_BALANCE = 500;

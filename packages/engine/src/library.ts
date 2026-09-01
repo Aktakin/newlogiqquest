@@ -29,6 +29,14 @@ export const library: LibraryEntry[] = [
     meta: 'Endless run',
   },
   {
+    id: 'case-cipher-mini',
+    title: 'Case Cipher Mini',
+    blurb: 'Easy words and fun questions for little typists.',
+    accent: 'sky',
+    path: '/cipher/mini',
+    meta: 'Kids mode',
+  },
+  {
     id: 'games',
     title: 'Tetris',
     blurb: 'Stack pads. Spot colours. Pause and plan.',
@@ -43,5 +51,13 @@ export const library: LibraryEntry[] = [
     accent: 'mint',
     path: '/maze',
     meta: '20 levels',
+  },
+  {
+    id: 'keyboard-lab',
+    title: 'Key Lab',
+    blurb: 'Study the full keyboard, then drag keys into place.',
+    accent: 'violet',
+    path: '/keyboard',
+    meta: '6 levels',
   },
 ];

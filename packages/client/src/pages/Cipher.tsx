@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import {
   caseHintsActive,
   choiceToAnswer,
+  drawMiniPrompt,
   drawPrompt,
   gradeCipher,
+  miniCaseHintsActive,
   timeLimitFor,
+  timeLimitForMini,
 } from '@logiq/engine';
 import type { CipherGrade, CipherPrompt, TokenPrompt } from '@logiq/engine';
 import { IconArrowRight, IconBack, IconRestart, IconTarget } from '../components/Icons';
@@ -13,6 +16,85 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import { usePlayer } from '../lib/player';
 import { play as playCue } from '../lib/sfx';
 import './cipher.css';
+
+type CipherVariant = 'full' | 'mini';
+
+interface CipherConfig {
+  accent: string;
+  title: string;
+  drawPrompt: typeof drawPrompt;
+  timeLimitFor: (prompt: CipherPrompt) => number;
+  caseHintsActive: (cracked: number) => boolean;
+  briefTitle: string;
+  rules: string[];
+  walletLabel: string;
+  securityBadge: string;
+  typingHelp: string;
+  quizHelp: string;
+  inputAria: string;
+  verdictOk: string;
+  verdictTimeout: string;
+  verdictMiss: string;
+  nextLabel: string;
+  backLabel: string;
+  quizAdvanceMs: number;
+  rootClass: string;
+}
+
+const VARIANTS: Record<CipherVariant, CipherConfig> = {
+  full: {
+    accent: 'gold',
+    title: 'Case Cipher',
+    drawPrompt,
+    timeLimitFor,
+    caseHintsActive,
+    briefTitle: 'Type it exactly. Capitals count.',
+    rules: [
+      'Reproduce the password as written — case, dashes and underscores all matter.',
+      'It sends itself on the last character. Beat the clock or you lose money.',
+      'A clean break pays. A miss takes money back.',
+      'Every so often a JavaScript question pops up. Those pay more — and cost more.',
+    ],
+    walletLabel: 'Heist wallet',
+    securityBadge: 'Security question',
+    typingHelp: 'Capitals, underscores and dashes all count. It sends itself on the last character.',
+    quizHelp: 'Answer to bank the bonus — number keys work too.',
+    inputAria: 'Type the token exactly',
+    verdictOk: 'Clean break.',
+    verdictTimeout: 'Out of time.',
+    verdictMiss: 'Trace fee charged.',
+    nextLabel: 'Next target',
+    backLabel: 'Back to the password',
+    quizAdvanceMs: 2600,
+    rootClass: 'cipher',
+  },
+  mini: {
+    accent: 'sky',
+    title: 'Case Cipher Mini',
+    drawPrompt: drawMiniPrompt,
+    timeLimitFor: timeLimitForMini,
+    caseHintsActive: miniCaseHintsActive,
+    briefTitle: 'Type the word. Take your time.',
+    rules: [
+      'Type simple words — just letters, all lowercase.',
+      'You get plenty of time, so no need to rush.',
+      'Get it right to earn coins. A miss loses a few.',
+      'Every few words, a fun bonus question pops up — games, cartoons and keyboard facts.',
+    ],
+    walletLabel: 'Coin pouch',
+    securityBadge: 'Bonus question',
+    typingHelp: 'Type each letter of the word. It checks itself when you finish the last letter.',
+    quizHelp: 'Tap an answer — or press 1, 2, 3 or 4 on your keyboard.',
+    inputAria: 'Type the word',
+    verdictOk: 'Nice typing!',
+    verdictTimeout: 'Time ran out.',
+    verdictMiss: 'Not quite.',
+    nextLabel: 'Next word',
+    backLabel: 'Back to the word',
+    quizAdvanceMs: 3200,
+    rootClass: 'cipher cipher--mini',
+  },
+};
 
 const money = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -23,7 +105,6 @@ const money = new Intl.NumberFormat('en-US', {
 const JS_TOKEN =
   /(\/\/.*$)|('[^']*'|"[^"]*")|\b(const|let|var|for|if|return|await|typeof|new|function)\b|\b(true|false|null|undefined)\b|\b(\d+)\b/gm;
 
-/** Small highlighter for the snippets — the same palette as the code view. */
 function highlightJs(code: string) {
   const parts: Array<{ text: string; cls: string }> = [];
   let cursor = 0;
@@ -71,10 +152,13 @@ const EMPTY_SESSION: Session = {
   lost: 0,
 };
 
-export function Cipher() {
+function CipherView({ variant }: { variant: CipherVariant }) {
+  const config = VARIANTS[variant];
   const player = usePlayer();
   const [round, setRound] = useState(0);
-  const [prompt, setPrompt] = useState<CipherPrompt>(() => drawPrompt({ round: 0, cracked: 0 }));
+  const [prompt, setPrompt] = useState<CipherPrompt>(() =>
+    config.drawPrompt({ round: 0, cracked: 0 }),
+  );
   const [typed, setTyped] = useState('');
   const [choice, setChoice] = useState<number | null>(null);
   const [grade, setGrade] = useState<CipherGrade | null>(null);
@@ -83,19 +167,18 @@ export function Cipher() {
   const [recent, setRecent] = useState<string[]>([]);
   const [ended, setEnded] = useState(false);
   const [started, setStarted] = useState(false);
-  /** Kept so a question can appear over the password it interrupted. */
   const [lastToken, setLastToken] = useState<TokenPrompt | null>(() =>
     prompt.kind === 'token' ? prompt : null,
   );
 
-  const limit = timeLimitFor(prompt);
+  const limit = config.timeLimitFor(prompt);
   const [remaining, setRemaining] = useState(limit);
   const deadline = useRef(Date.now() + limit);
   const settled = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const reviewing = grade !== null;
-  const hintsOn = caseHintsActive(session.cracked);
+  const hintsOn = config.caseHintsActive(session.cracked);
 
   const focusInput = useCallback(() => {
     if (prompt.kind === 'token') inputRef.current?.focus();
@@ -105,7 +188,7 @@ export function Cipher() {
     (crackedOverride?: number) => {
       const nextRecent = [prompt.id, ...recent].slice(0, 8);
       const next = round + 1;
-      const drawn = drawPrompt({
+      const drawn = config.drawPrompt({
         round: next,
         cracked: crackedOverride ?? session.cracked,
         recentIds: nextRecent,
@@ -120,11 +203,11 @@ export function Cipher() {
       setGrade(null);
       setRanOut(false);
       settled.current = false;
-      deadline.current = Date.now() + timeLimitFor(drawn);
-      setRemaining(timeLimitFor(drawn));
+      deadline.current = Date.now() + config.timeLimitFor(drawn);
+      setRemaining(config.timeLimitFor(drawn));
       window.setTimeout(() => inputRef.current?.focus(), 0);
     },
-    [prompt.id, recent, round, session.cracked],
+    [config, prompt.id, recent, round, session.cracked],
   );
 
   const finish = useCallback(
@@ -173,14 +256,11 @@ export function Cipher() {
     [finish, reviewing],
   );
 
-  // No Enter key: the attempt commits itself on the last character, right or
-  // wrong. Up to that point every keystroke can still be taken back.
   useEffect(() => {
     if (!started || prompt.kind !== 'token' || reviewing) return;
     if (typed.length >= prompt.answer.length) finish(typed, false);
   }, [started, typed, prompt, reviewing, finish]);
 
-  // The clock is the whole tension of the game, so it owns the round's ending.
   const timeUp = useRef(() => {});
   useEffect(() => {
     timeUp.current = () => finish(prompt.kind === 'token' ? typed : '', true);
@@ -196,26 +276,27 @@ export function Cipher() {
     return () => window.clearInterval(ticker);
   }, [started, reviewing, round]);
 
-  // A clean crack moves on by itself; a miss waits so the answer can be read.
   useEffect(() => {
     if (!grade?.correct) return undefined;
-    const timer = window.setTimeout(() => nextRound(), prompt.kind === 'quiz' ? 2600 : 1000);
+    const timer = window.setTimeout(
+      () => nextRound(),
+      prompt.kind === 'quiz' ? config.quizAdvanceMs : 1000,
+    );
     return () => window.clearTimeout(timer);
-  }, [grade, nextRound, prompt.kind]);
+  }, [grade, nextRound, prompt.kind, config.quizAdvanceMs]);
 
   useEffect(() => {
     if (started) focusInput();
   }, [started, focusInput]);
 
   const begin = useCallback(() => {
-    deadline.current = Date.now() + timeLimitFor(prompt);
-    setRemaining(timeLimitFor(prompt));
+    deadline.current = Date.now() + config.timeLimitFor(prompt);
+    setRemaining(config.timeLimitFor(prompt));
     settled.current = false;
     setStarted(true);
     window.setTimeout(() => inputRef.current?.focus(), 0);
-  }, [prompt]);
+  }, [config, prompt]);
 
-  // Number keys answer a question; Enter moves on once a round is graded.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (ended || !started) return;
@@ -235,7 +316,6 @@ export function Cipher() {
     return () => window.removeEventListener('keydown', onKey);
   }, [ended, started, reviewing, prompt, pick, nextRound]);
 
-  // While a question is up, the interrupted password stays on the board behind.
   const board = prompt.kind === 'token' ? prompt : lastToken;
   const asking = prompt.kind === 'quiz';
 
@@ -250,7 +330,6 @@ export function Cipher() {
         char,
         key: `${index}-${char}`,
         caseClass: hintsOn ? (isUpper ? 'is-upper' : isLower ? 'is-lower' : 'is-symbol') : '',
-        // Live correctness is part of the training wheels: it goes with the hints.
         markClass: hintsOn && consumed ? (typedChar === char ? 'is-ok' : 'is-bad') : '',
         isCaret: index === typed.length,
       };
@@ -279,13 +358,13 @@ export function Cipher() {
       <span className="verdict__text">
         {grade.correct ? (
           <>
-            Clean break.
+            {config.verdictOk}
             {grade.speedBonus > 0 && ` Speed bonus ${money.format(grade.speedBonus)}.`}
             {grade.streakBonus > 0 && ` Streak bonus ${money.format(grade.streakBonus)}.`}
           </>
         ) : (
           <>
-            {ranOut ? 'Out of time.' : 'Trace fee charged.'} The answer was{' '}
+            {ranOut ? config.verdictTimeout : config.verdictMiss} The answer was{' '}
             <code>{grade.expected}</code>
           </>
         )}
@@ -293,7 +372,7 @@ export function Cipher() {
       {asking && <span className="verdict__why">{prompt.explain}</span>}
       {!grade.correct && (
         <button type="button" className="btn btn--primary verdict__next" onClick={() => nextRound()}>
-          {asking ? 'Back to the password' : 'Next target'}
+          {asking ? config.backLabel : config.nextLabel}
           <IconArrowRight width={16} height={16} />
         </button>
       )}
@@ -301,7 +380,7 @@ export function Cipher() {
   );
 
   return (
-    <div className="cipher" data-accent="gold" onClick={focusInput}>
+    <div className={config.rootClass} data-accent={config.accent} onClick={focusInput}>
       <header className="cipher__bar">
         <Link className="btn btn--ghost cipher__back" to="/">
           <IconBack width={18} height={18} />
@@ -309,12 +388,12 @@ export function Cipher() {
         </Link>
         {started && (
           <div className="wallet">
-            <span className="wallet__label">Heist wallet</span>
+            <span className="wallet__label">{config.walletLabel}</span>
             <strong className="wallet__value">{money.format(player.wallet.balance)}</strong>
           </div>
         )}
         <span className="cipher__name">
-          Case Cipher
+          {config.title}
           <ThemeToggle />
         </span>
       </header>
@@ -322,12 +401,11 @@ export function Cipher() {
       {!started ? (
         <section className="brief">
           <p className="eyebrow">How it works</p>
-          <h1 className="brief__title">Type it exactly. Capitals count.</h1>
+          <h1 className="brief__title">{config.briefTitle}</h1>
           <ol className="brief__rules">
-            <li>Reproduce the password as written — case, dashes and underscores all matter.</li>
-            <li>It sends itself on the last character. Beat the clock or you lose money.</li>
-            <li>A clean break pays. A miss takes money back.</li>
-            <li>Every so often a JavaScript question pops up. Those pay more — and cost more.</li>
+            {config.rules.map((rule) => (
+              <li key={rule}>{rule}</li>
+            ))}
           </ol>
           <button type="button" className="btn btn--primary brief__go" onClick={begin}>
             Start
@@ -335,64 +413,62 @@ export function Cipher() {
           </button>
         </section>
       ) : (
-      <main className={`cipher__stage${asking ? ' cipher__stage--held' : ''}`} aria-hidden={asking}>
-        <div className="cipher__meta">
-          <span className="eyebrow">{board?.label}</span>
-          {session.streak > 1 && <span className="cipher__streak">streak ×{session.streak}</span>}
-        </div>
+        <main className={`cipher__stage${asking ? ' cipher__stage--held' : ''}`} aria-hidden={asking}>
+          <div className="cipher__meta">
+            <span className="eyebrow">{board?.label}</span>
+            {session.streak > 1 && <span className="cipher__streak">streak ×{session.streak}</span>}
+          </div>
 
-        {!asking && clock}
+          {!asking && clock}
 
-        <div className={`target${hintsOn ? ' target--hinted' : ''}`}>
-          {characters.map((character) => (
-            <span
-              key={character.key}
-              className={`target__char ${character.caseClass} ${character.markClass}${
-                character.isCaret && !reviewing && !asking ? ' target__char--caret' : ''
-              }`}
-            >
-              {character.char === ' ' ? '\u00a0' : character.char}
-            </span>
-          ))}
-        </div>
-
-        <input
-          ref={inputRef}
-          className={`entry${grade && !asking ? (grade.correct ? ' entry--ok' : ' entry--bad') : ''}`}
-          value={typed}
-          readOnly={reviewing || asking}
-          maxLength={board?.answer.length}
-          spellCheck={false}
-          autoComplete="off"
-          autoCapitalize="off"
-          autoCorrect="off"
-          aria-label="Type the token exactly"
-          placeholder="start typing…"
-          onChange={(event) => setTyped(event.target.value)}
-          onPaste={(event) => event.preventDefault()}
-        />
-
-        <div className="cipher__result" role="status">
-          {!asking && grade ? (
-            verdict
-          ) : (
-            <p className="cipher__prompt-help">
-              <IconTarget width={15} height={15} />
-              <span>
-                Capitals, underscores and dashes all count. It sends itself on the last character.
+          <div className={`target${hintsOn ? ' target--hinted' : ''}`}>
+            {characters.map((character) => (
+              <span
+                key={character.key}
+                className={`target__char ${character.caseClass} ${character.markClass}${
+                  character.isCaret && !reviewing && !asking ? ' target__char--caret' : ''
+                }`}
+              >
+                {character.char === ' ' ? '\u00a0' : character.char}
               </span>
-            </p>
-          )}
-        </div>
-      </main>
+            ))}
+          </div>
+
+          <input
+            ref={inputRef}
+            className={`entry${grade && !asking ? (grade.correct ? ' entry--ok' : ' entry--bad') : ''}`}
+            value={typed}
+            readOnly={reviewing || asking}
+            maxLength={board?.answer.length}
+            spellCheck={false}
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            aria-label={config.inputAria}
+            placeholder="start typing…"
+            onChange={(event) => setTyped(event.target.value)}
+            onPaste={(event) => event.preventDefault()}
+          />
+
+          <div className="cipher__result" role="status">
+            {!asking && grade ? (
+              verdict
+            ) : (
+              <p className="cipher__prompt-help">
+                <IconTarget width={15} height={15} />
+                <span>{config.typingHelp}</span>
+              </p>
+            )}
+          </div>
+        </main>
       )}
 
       {started && asking && (
-        <div className="popup" role="dialog" aria-modal="true" aria-label="Security question">
+        <div className="popup" role="dialog" aria-modal="true" aria-label={config.securityBadge}>
           <div className="popup__scrim" />
           <div className="popup__card">
             <header className="popup__head">
-              <span className="popup__badge">Security question</span>
+              <span className="popup__badge">{config.securityBadge}</span>
             </header>
 
             {clock}
@@ -438,7 +514,7 @@ export function Cipher() {
               ) : (
                 <p className="cipher__prompt-help">
                   <IconTarget width={15} height={15} />
-                  <span>Answer to bank the bonus — number keys work too.</span>
+                  <span>{config.quizHelp}</span>
                 </p>
               )}
             </div>
@@ -447,37 +523,37 @@ export function Cipher() {
       )}
 
       {started && (
-      <footer className="cipher__foot">
-        <dl className="cipher__stats">
-          <div>
-            <dt>Cracked</dt>
-            <dd>{session.cracked}</dd>
-          </div>
-          <div>
-            <dt>Missed</dt>
-            <dd>{session.failed}</dd>
-          </div>
-          <div>
-            <dt>Best streak</dt>
-            <dd>{session.bestStreak}</dd>
-          </div>
-          <div>
-            <dt>This run</dt>
-            <dd className={net >= 0 ? 'is-up' : 'is-down'}>
-              {net >= 0 ? '+' : '−'}
-              {money.format(Math.abs(net))}
-            </dd>
-          </div>
-        </dl>
-        <button
-          type="button"
-          className="btn"
-          onClick={() => setEnded(true)}
-          disabled={session.cracked + session.failed === 0}
-        >
-          End run
-        </button>
-      </footer>
+        <footer className="cipher__foot">
+          <dl className="cipher__stats">
+            <div>
+              <dt>{variant === 'mini' ? 'Typed' : 'Cracked'}</dt>
+              <dd>{session.cracked}</dd>
+            </div>
+            <div>
+              <dt>Missed</dt>
+              <dd>{session.failed}</dd>
+            </div>
+            <div>
+              <dt>Best streak</dt>
+              <dd>{session.bestStreak}</dd>
+            </div>
+            <div>
+              <dt>This run</dt>
+              <dd className={net >= 0 ? 'is-up' : 'is-down'}>
+                {net >= 0 ? '+' : '−'}
+                {money.format(Math.abs(net))}
+              </dd>
+            </div>
+          </dl>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setEnded(true)}
+            disabled={session.cracked + session.failed === 0}
+          >
+            End run
+          </button>
+        </footer>
       )}
 
       {ended && (
@@ -486,8 +562,8 @@ export function Cipher() {
           <div className="sheet__card sheet__card--win">
             <h2 className="sheet__title">Run banked</h2>
             <p className="sheet__body">
-              {session.cracked} cracked, {session.failed} missed. Your wallet carries over to the
-              next run.
+              {session.cracked} {variant === 'mini' ? 'words typed' : 'cracked'}, {session.failed}{' '}
+              missed. Your {variant === 'mini' ? 'coins' : 'wallet'} carries over to the next run.
             </p>
             <dl className="sheet__stats">
               <div>
@@ -499,7 +575,7 @@ export function Cipher() {
                 <dd>{money.format(session.lost)}</dd>
               </div>
               <div>
-                <dt>Wallet</dt>
+                <dt>{variant === 'mini' ? 'Coins' : 'Wallet'}</dt>
                 <dd>{money.format(player.wallet.balance)}</dd>
               </div>
             </dl>
@@ -525,4 +601,12 @@ export function Cipher() {
       )}
     </div>
   );
+}
+
+export function Cipher() {
+  return <CipherView variant="full" />;
+}
+
+export function CipherMini() {
+  return <CipherView variant="mini" />;
 }

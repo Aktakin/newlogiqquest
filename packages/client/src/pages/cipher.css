@@ -686,3 +686,23 @@
     gap: 12px;
   }
 }
+
+/* ------------------------------------------------------------------ mini */
+.cipher--mini .brief__title {
+  font-size: clamp(28px, 5vw, 36px);
+}
+
+.cipher--mini .target {
+  font-size: clamp(28px, 6vw, 40px);
+  letter-spacing: 0.08em;
+}
+
+.cipher--mini .quiz__ask {
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.cipher--mini .choice__label {
+  font-size: 15px;
+}
+
